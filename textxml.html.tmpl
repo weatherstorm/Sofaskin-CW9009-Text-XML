@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head itemscope itemtype="https://schema.org/Website">
+    	<meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Refresh" content="180">
+	#if $Extras.has_key('cwop')
+        <meta name="description" content="$station.location Weather Station ($Extras.cwop) Climate Summary. This web site is powered by WeeWX">
+        #else
+        <meta name="description" content="$station.location Weather Station Climate Summary. This web site is powered by WeeWX">
+	#end if
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials">
+        <link rel="profile" href="https://gmpg.org/xfn/11" />
+	#if $Extras.has_key('web_url')
+	<link rel="canonical" href="$Extras.web_url/summary.html"/>
+	#end if 
+        
+        <title>$station.location Climate Summary</title>
+
+        <!-- Open Graph -->
+        <meta property="og:site_name" content="$station.location Weather Station Climate Summary. This web site is powered by WeeWX." />
+	<meta property="og:title" content="$station.location Weather Station Climate Summary"/>
+	#if $Extras.has_key('web_url')
+	<meta property="og:url" content="$Extras.web_url/summary.html"/>
+	#end if
+        <meta property="og:description" content="$station.location Weather Station Climate Summary. This web site is powered by WeeWX." />
+	<meta property="og:type" content="$station.location Weather Station Climate Summary" />
+
+        <!-- FavIcons -->
+        <link rel="icon" href="favicon.ico" type="image/png">
+	<link rel="apple-touch-icon" href="touch-icon.png"/>
+        
+        <!-- Styles -->
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="css/main.css">
+
+	<!-- Font Awesome Icon links -->
+   
+	<!-- Free license -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" crossorigin="anonymous">
+
+        <!-- Script -->
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="js/modernizr-2.6.2.min.js"></script>
+	<script src="js/checkdiff.js"></script>
+	
+	<script>
+	$.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results == null){
+		return null;
+	}
+	else{
+		return results[1] || 0;
+	}	
+
+	}
+ 
+	url = '/' + $.urlParam('report');
+	
+	function titleFunction() {
+	
+		var cut = url.split('.');
+		var date = cut[0].split('-');
+		//document.write(date[1]);
+  
+		if (date.length == 3) {
+			//date[1] is year, date[2] is month	
+			var month = new Array();
+			month[0] = "None ";
+			month[1] = "January ";
+			month[2] = "February ";
+			month[3] = "March ";
+			month[4] = "April ";
+			month[5] = "May ";
+			month[6] = "June ";
+			month[7] = "July ";
+			month[8] = "August ";
+			month[9] = "September ";
+			month[10] = "October ";
+			month[11] = "November ";
+			month[12] = "December ";
+	
+			var e = month[Number(date[2])];
+			var n = e.concat(date[1]);
+		}else{
+			var n = date[1];
+		}
+
+		#if $Extras.has_key('cwop')
+			var docTitle = "$station.location ($Extras.cwop) ";
+		#else
+			var docTitle = "$station.location ";
+		#end if 
+	
+		var title = "Climate Summary for ";
+	
+		document.title = docTitle.concat(title, n);
+		document.getElementById("pagetitle").innerHTML = title.concat(n); 
+	
+	}
+	
+	</script>
+        
+  </head>
+
+  <body onload="titleFunction()">
+    <!-- Menu navbar -->
+    <header>
+            <div class="container-fix" >
+                <div class="h-left" >
+                <h1><i class="fas fa-cloud" ></i> $station.location </h1>
+                <p>$station.latitude[0]&deg; $station.latitude[1]' $station.latitude[2] | $station.longitude[0]&deg; $station.longitude[1]' $station.longitude[2] | $station.altitude | <a href="https://www.google.com/maps/?q=$station.latitude[0]&deg;%20$station.latitude[1]%20$station.latitude[2],$station.longitude[0]&deg;%20$station.longitude[1]%20$station.longitude[2]" target="_blank" ><i class="fas fa-map-marker-alt" ></i> Show on map</a></p>
+
+		<h2 id="pagetitle">Climate Summary</h2>
+
+                <p><i class="far fa-clock" ></i> $current.dateTime $current.dateTime.format("%Z")</p>
+		<p id="freshweather" class="m-orange"></p>
+		<script>
+                      window.onload = checkDiff("$current.dateTime ($current.dateTime.format('%Z'))");
+                </script>
+                </div>
+                
+                <div class="h-right" >
+                    <table>
+                        <tr><td><b>Station:</b></td><td>$station.hardware</td></tr>
+                        <tr><td><b>Software:</b></td><td><a href="https://weewx.com/" target="_blank" >WeeWX v$station.version</a></td></tr>
+                        <tr><td><b>Weewx uptime:</b></td><td>$station.uptime</td></tr>
+                        <tr><td><b>Server uptime:</b></td><td>$station.os_uptime</td></tr>
+                    </table>
+                </div>
+
+                <nav>
+                    <ul class="topnav" id="myTopnav">
+			<li class="icon"><a href="javascript:void(0);" onclick="myFunction()"><i class="fas fa-bars" ></i></a></li>
+                        <li><a href="/" >Current</a></li>
+                        <li><a href="week.html" >Week</a></li>
+                        <li><a href="month.html" >Month</a></li>
+                        <li><a href="year.html" >Year</a></li>
+			<li class="active" ><a href="summary.html" >Summaries</a></li>
+			<li><a href="about.html" >About</a></li>
+                        <li><a href="RSS/weewx_rss.xml" ><i class="fas fa-rss" ></i></a></li>
+	    		#if $Extras.has_key('twitter_url')
+	    		<li><a href=$Extras.twitter_url><i class="fab fa-twitter" ></i></a></li>
+	    		#end if
+                    </ul>
+                </nav>
+            </div>
+     </header>
+    <!-- Main container -->  
+     <div class="main" >
+        <div class="container" >
+	   <div class="center" >
+	       <div class="card">
+		<script>
+			$.ajax({
+			url: url,
+			dataType:"text",
+			success:function(data)
+			{
+				\$("#data").html(data);
+			},
+			error: function() 
+			{
+				\$("#data").html("<p>An error has occurred or there is no data available!</p>"); 
+			}
+			});
+		</script>
+		<pre id="data"></pre>
+               </div>
+	   </div>   
+        </div>
+    </div>
+        
+        <footer>
+	    <div style="text-align:center">
+          	#if $Extras.has_key('you')
+          	<i class="fa-solid fa-dragon"> </i><a href=mailto:$Extras.email> $Extras.you</a> 
+          	#end if
+          	&sdot;
+          	Copyright <i class="far fa-copyright"></i> $latest.dateTime.format("%Y") 
+          	<br>
+          	Sofaskin by <a href="https://neoground.com">Neoground</a>
+          	&sdot;
+          	CW9009 Version by <a href="https://www.centuryfarmweather.com">Century Farm Weather</a>
+          	&sdot;
+          	Powered by<i class="fas fa-cog fa-spin fa-fw" aria-hidden="true"></i><a href="https://weewx.com/" target="_blank">WeeWX</a> 
+            </div>
+        </footer>
+
+        #if $Extras.has_key('googleAnalyticsId')
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	    <script async src="https://www.googletagmanager.com/gtag/js?id=$Extras.googleAnalyticsId"></script>
+	    <script>
+	      window.dataLayer = window.dataLayer || [];
+	      function gtag(){dataLayer.push(arguments);}
+	      gtag('js', new Date());
+	      gtag('config', '$Extras.googleAnalyticsId');
+	    </script>
+        #end if
+
+<!-- Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon -->
+	<script>
+		function myFunction() {
+    			var x = document.getElementById("myTopnav");
+    			if (x.className === "topnav") {
+       			 	x.className += " responsive";
+    			} else {
+        			x.className = "topnav";
+    			}
+		}
+	</script>
+    </body>
+</html>
+
